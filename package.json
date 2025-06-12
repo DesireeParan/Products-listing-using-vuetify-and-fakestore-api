@@ -10,7 +10,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "predeploy": "npm run build",
-    "deploy": "VITE_BASE=/Products-listing-using-vuetify-and-fakestore-api/ gh-pages -d dist"
+   "deploy": "cross-env VITE_BASE=/Products-listing-using-vuetify-and-fakestore-api/ gh-pages -d dist"
   },
   "dependencies": {
     "@fontsource/roboto": "5.2.5",
@@ -26,6 +26,7 @@
     "@types/vue-router": "^2.0.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
+    "cross-env": "^7.0.3",
     "gh-pages": "^6.3.0",
     "npm-run-all2": "^7.0.2",
     "sass-embedded": "^1.86.3",
