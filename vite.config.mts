@@ -10,7 +10,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/Products-listing-using-vuetify-and-fakestore-api/', // Set base to match GitHub repo name
+  base: '/', // Set base to root for custom domain or user/organization site
   plugins: [
     Vue({
       template: { transformAssetUrls },
