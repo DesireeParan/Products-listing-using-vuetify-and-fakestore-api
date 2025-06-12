@@ -157,21 +157,18 @@ import axios from 'axios';
 import { sharedProducts, sharedCategories } from './productStore';
 import AddProductModal from './AddProductModal.vue';
 import ProductDetailsModal from './ProductDetailsModal.vue';
-
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-}
+import type { Product } from './types';
+import type { Ref } from 'vue';
 
 const COLOR_PALETTE = [
   'Red', 'Blue', 'Green', 'Black', 'White', 'Yellow', 'Purple', 'Orange', 'Gray', 'Pink'
 ];
 
 export default defineComponent({
+  /**
+   * ProductList component
+   * @see {import('./types').Product}
+   */
   name: 'ProductList',
   components: { AddProductModal, ProductDetailsModal },
   setup() {
@@ -181,7 +178,7 @@ export default defineComponent({
     const search = ref('');
     const selectedCategory = ref('');
     const showModal = ref(false);
-    const selectedProduct = ref<Product | null>(null);
+    const selectedProduct = ref(null) as Ref<any>;
     const availableColors = ref<string[]>([]);
     const showAddProduct = ref(false);
     const newProduct = ref({
@@ -202,7 +199,7 @@ export default defineComponent({
 
     const fetchProducts = async () => {
       const response = await axios.get('https://fakestoreapi.com/products');
-      const apiProducts = response.data.map((p: Product) => ({
+      const apiProducts = response.data.map((p: any) => ({
         ...p,
         sold: Math.floor(Math.random() * 500) + 10,
         available: Math.floor(Math.random() * 100) + 1
@@ -211,7 +208,11 @@ export default defineComponent({
       if (products.value.length === 0) {
         products.value.push(...apiProducts);
       }
-      categories.value.splice(0, categories.value.length, ...Array.from(new Set(apiProducts.map((p: Product) => p.category))));
+      categories.value.splice(
+        0,
+        categories.value.length,
+        ...Array.from(new Set(apiProducts.map((p: any) => p.category as string))) as string[]
+      );
       // Load user-added products
       const userProducts = JSON.parse(localStorage.getItem('userProducts') || '[]');
       for (const up of userProducts) {
@@ -296,7 +297,12 @@ export default defineComponent({
           available: Math.floor(Math.random() * 100) + 1
         }));
         products.value.push(...apiProducts);
-        categories.value.splice(0, categories.value.length, ...Array.from(new Set(apiProducts.map((p: any) => p.category))));
+        categories.value.splice(
+          0,
+          categories.value.length,
+          ...Array.from(new Set(apiProducts.map((p: any) => p.category as string))) as string[]
+        );
+
       }
       // Load user-added products
       const userProducts = JSON.parse(localStorage.getItem('userProducts') || '[]');

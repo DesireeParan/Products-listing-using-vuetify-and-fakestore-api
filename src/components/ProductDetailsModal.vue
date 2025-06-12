@@ -120,7 +120,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+// @ts-ignore
 import { useProductDetailsModal } from '@/assets/js/product_details.js';
 
 interface Product {

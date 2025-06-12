@@ -42,7 +42,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   name: 'EditProductModal',
