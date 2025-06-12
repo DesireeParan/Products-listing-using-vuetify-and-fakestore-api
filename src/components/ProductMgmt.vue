@@ -10,53 +10,56 @@
             <v-btn color="primary" class="add-btn" prepend-icon="mdi-plus" @click="showAddProduct = true">Add Product</v-btn>
           </v-card-title>
           <v-card-text>
+            <div class="table-headings d-flex mb-2 px-2">
+              <div class="heading-col center-col" style="flex:2 0 0;">Product</div>
+              <div class="heading-col center-col" style="flex:1 0 0; min-width:120px;">Price</div>
+              <div class="heading-col center-col" style="flex:2 0 0;">Description</div>
+              <div class="heading-col center-col" style="flex:1 0 0; min-width:90px;">Quantity</div>
+              <div class="heading-col center-col" style="flex:1 0 0; min-width:120px;">Category</div>
+              <div class="heading-col center-col" style="flex:1 0 0; min-width:90px;">Actions</div>
+            </div>
             <!-- Product Table -->
             <v-data-table :headers="headers" :items="products" class="elevation-1 custom-table" item-key="id" :items-per-page="5">
-              <template #item.image="{ item }">
-                <v-img :src="item.image" max-width="60" max-height="60" class="rounded" />
-              </template>
+              <!-- Removed image slot -->
               <template #item.title="{ item }">
-                <span class="font-weight-bold">{{ item.title }}</span>
+                <div class="center-col" style="flex:2 0 0;">{{ item.title }}</div>
               </template>
               <template #item.price="{ item }">
-                <span class="product-price navy-blur-bg">₱{{ (item.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                <div class="center-col" style="flex:1 0 0; min-width:120px;">
+                  <span class="product-price navy-blur-bg">₱{{ (item.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                </div>
               </template>
               <template #item.description="{ item }">
-                <span class="table-description">{{ item.description }}</span>
+                <div class="center-col" style="flex:2 0 0;">
+                  <span class="table-description">{{ item.description }}</span>
+                </div>
               </template>
               <template #item.quantity="{ item }">
-                <span>{{ item.available ?? '-' }}</span>
+                <div class="center-col" style="flex:1 0 0; min-width:90px;">{{ item.available ?? '-' }}</div>
               </template>
               <template #item.category="{ item }">
-                <span>{{ item.category }}</span>
+                <div class="center-col" style="flex:1 0 0; min-width:120px;">{{ item.category }}</div>
               </template>
               <template #item.actions="{ item }">
-                <v-btn icon color="primary" @click="editProduct(item)"><v-icon>mdi-pencil</v-icon></v-btn>
-                <v-btn icon color="error" @click="deleteProduct(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
+                <div class="d-flex justify-center align-center action-icons" style="flex:1 0 0; min-width:90px; gap:12px;">
+                  <v-btn icon class="action-btn edit-btn" @click="editProduct(item)">
+                    <v-icon class="action-edit">mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn icon class="action-btn delete-btn" @click="deleteProduct(item.id)">
+                    <v-icon class="action-delete">mdi-delete</v-icon>
+                  </v-btn>
+                </div>
               </template>
             </v-data-table>
             <!-- Add Product Modal -->
             <AddProductModal :show="showAddProduct" @add="addProductFromModal" @close="showAddProduct = false" />
-            <!-- Edit Product Dialog -->
-            <v-dialog v-model="showEditDialog" max-width="600px">
-              <v-card>
-                <v-card-title>Edit Product</v-card-title>
-                <v-card-text>
-                  <v-form @submit.prevent="onUpdate">
-                    <v-text-field v-model="form.title" label="Title" required prepend-inner-icon="mdi-tag" class="mb-3" />
-                    <v-text-field v-model="form.price" label="Price" type="number" required prepend-inner-icon="mdi-currency-usd" class="mb-3" />
-                    <v-textarea v-model="form.description" label="Description" required prepend-inner-icon="mdi-text" class="mb-3" rows="2" auto-grow />
-                    <v-text-field v-model="form.category" label="Category" required prepend-inner-icon="mdi-shape" class="mb-3" />
-                    <v-text-field v-model="form.image" label="Image URL" required prepend-inner-icon="mdi-image" class="mb-3" />
-                    <v-card-actions>
-                      <v-spacer />
-                      <v-btn color="primary" type="submit" prepend-icon="mdi-content-save">Update</v-btn>
-                      <v-btn color="error" @click="cancelEdit">Cancel</v-btn>
-                    </v-card-actions>
-                  </v-form>
-                </v-card-text>
-              </v-card>
-            </v-dialog>
+            <!-- Edit Product Modal -->
+            <EditProductModal
+              :show="showEditDialog"
+              :product="form"
+              @update="onUpdateFromModal"
+              @close="cancelEdit"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -67,12 +70,13 @@
 <script lang="ts">
 import ProductList from './ProductList.vue';
 import AddProductModal from './AddProductModal.vue';
+import EditProductModal from './EditProductModal.vue';
 import { ref, onMounted, defineComponent } from 'vue';
 import axios from 'axios';
 
 export default defineComponent({
   name: 'AddProduct',
-  components: { AddProductModal },
+  components: { AddProductModal, EditProductModal },
   setup() {
     const products = ref<any[]>([]);
     const form = ref({
@@ -86,7 +90,7 @@ export default defineComponent({
     const showAddProduct = ref(false);
     const showEditDialog = ref(false);
     const headers = [
-      { text: 'Image', value: 'image', sortable: false },
+      // Removed Image column
       { text: 'Title', value: 'title' },
       { text: 'Price', value: 'price' },
       { text: 'Description', value: 'description' },
@@ -122,10 +126,10 @@ export default defineComponent({
       showEditDialog.value = true;
     }
 
-    function onUpdate() {
-      const idx = products.value.findIndex(p => p.id === form.value.id);
+    function onUpdateFromModal(updatedProduct: any) {
+      const idx = products.value.findIndex(p => p.id === updatedProduct.id);
       if (idx !== -1) {
-        products.value[idx] = { ...form.value };
+        products.value[idx] = { ...updatedProduct };
       }
       showEditDialog.value = false;
       resetForm();
@@ -146,14 +150,14 @@ export default defineComponent({
       showAddProduct.value = false;
     }
 
-    return { products, form, headers, showAddProduct, showEditDialog, onSubmit, editProduct, onUpdate, deleteProduct, cancelEdit, addProductFromModal };
+    return { products, form, headers, showAddProduct, showEditDialog, onSubmit, editProduct, deleteProduct, cancelEdit, addProductFromModal, onUpdateFromModal };
   }
 });
 </script>
 
 <style scoped>
 .add-product-container {
-  background: #fff;
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -199,23 +203,96 @@ export default defineComponent({
   background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%);
   color: #0a174e !important;
 }
+.custom-table {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+    color: #0a174e;
+  background: transparent;
+}
 .custom-table .v-data-table__wrapper {
-  background: #fff !important;
+  background-color: #f6f4f4 !important;
 }
-.navy-blur-bg {
-  background: rgba(10, 23, 78, 0.18);
-  backdrop-filter: blur(2px);
-  border-radius: 8px;
-  padding: 4px 12px;
-  color: #FFD700;
-  font-size: 1.1rem;
-  display: inline-block;
-}
+
 .table-description {
   max-width: 220px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
+}
+.action-icons .v-btn {
+  background: transparent !important;
+  box-shadow: none !important;
+  margin: 0 2px;
+}
+.action-icons .v-btn:hover {
+  background: #f5f7fa !important;
+}
+.action-edit {
+  color: #0a174e !important; /* Vuetify blue */
+}
+.action-delete {
+  color: #d32f2f !important; /* Vuetify red */
+}
+.table-headings {
+  font-weight: 700;
+  color: #0a174e;
+  background: #f5f7fa;
+  border-radius: 8px 8px 0 0;
+  font-size: 1.05rem;
+  align-items: center;
+  text-align: center;
+}
+.heading-col {
+  padding: 12px 8px 12px 0;
+  text-align: center;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.center-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.table-image-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+}
+.table-image {
+  border-radius: 8px;
+  object-fit: cover;
+  background: #f5f7fa;
+  border: 1px solid #e0e0e0;
+}
+.action-icons {
+  gap: 12px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.action-btn {
+  box-shadow: none !important;
+  margin: 0 2px;
+  transition: background 0.2s;
+}
+.edit-btn {
+  background: #1976d2 !important; /* Vuetify blue */
+  border: none !important;
+}
+.edit-btn:hover {
+  background: #1565c0 !important;
+}
+.delete-btn {
+  background: #d32f2f !important; /* Vuetify red */
+  border: none !important;
+}
+.delete-btn:hover {
+  background: #b71c1c !important;
 }
 </style>

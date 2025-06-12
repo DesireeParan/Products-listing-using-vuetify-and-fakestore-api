@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 import ProductList from './components/ProductList.vue';
-import AddProduct from './components/AddProduct.vue';
+import ProductMgmt from './components/ProductMgmt.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: ProductList },
-  { path: '/add', component: AddProduct },
+  { path: '/lists', component: ProductMgmt },
 ];
 
 const router = createRouter({

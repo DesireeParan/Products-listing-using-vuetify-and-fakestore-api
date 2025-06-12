@@ -1,0 +1,136 @@
+<template>
+  <v-dialog v-model="show" max-width="600px">
+    <v-card class="edit-product-modal">
+      <v-btn icon class="modal-close-btn" @click="$emit('close')" aria-label="Close">
+        <v-icon color="#0a174e">mdi-close</v-icon>
+      </v-btn>
+      <v-card-title class="edit-modal-title">
+        <v-icon color="#FFD700" class="mr-2">mdi-pencil-box</v-icon>
+        Edit Product
+      </v-card-title>
+      <v-card-text>
+        <v-form @submit.prevent="onUpdate">
+          <v-text-field v-model="form.title" label="Title" required prepend-inner-icon="mdi-tag" class="mb-3 gold-input" />
+          <v-text-field
+            :value="form.price !== undefined && form.price !== null && form.price !== '' ? `₱${(Number(form.price) * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''"
+            label="Price (₱)"
+            prepend-inner-icon="mdi-currency-php"
+            class="mb-3 gold-input"
+            readonly
+            persistent-hint
+          />
+          <v-textarea v-model="form.description" label="Description" required prepend-inner-icon="mdi-text" class="mb-3 gold-input" rows="2" auto-grow />
+          <v-select
+            v-model="form.category"
+            :items="categories"
+            label="Category"
+            required
+            prepend-inner-icon="mdi-shape"
+            class="mb-3 gold-input"
+            clearable
+          />
+          <v-text-field v-model="form.image" label="Image URL" required prepend-inner-icon="mdi-image" class="mb-3 gold-input" />
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="primary" type="submit" prepend-icon="mdi-content-save" class="edit-save-btn">Update</v-btn>
+            <v-btn @click="$emit('close')" class="edit-cancel-btn">Close</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script lang="ts">
+import { defineComponent, PropType, ref, watch } from 'vue';
+
+export default defineComponent({
+  name: 'EditProductModal',
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    },
+    product: {
+      type: Object as PropType<any>,
+      default: () => ({})
+    }
+  },
+  emits: ['update', 'close'],
+  setup(props, { emit }) {
+    const form = ref({ ...props.product });
+    const categories = ref([
+      'electronics',
+      'jewelery',
+      "men's clothing",
+      "women's clothing"
+    ]);
+
+    watch(() => props.product, (newVal) => {
+      form.value = { ...newVal };
+    });
+
+    function onUpdate() {
+      emit('update', { ...form.value });
+    }
+
+    return { form, onUpdate, categories };
+  }
+});
+</script>
+
+<style scoped>
+.edit-product-modal {
+  background: #fff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  color: #0a174e;
+  border-radius: 12px;
+  padding: 16px;
+}
+.edit-modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0a174e;
+  display: flex;
+  align-items: center;
+  letter-spacing: 1px;
+  padding-bottom: 8px;
+}
+.gold-input .v-input__control {
+  background: #f5f7fa !important;
+  color: #0a174e !important;
+  border-radius: 8px;
+}
+.gold-input input,
+.gold-input textarea {
+  color: #0a174e !important;
+}
+.edit-save-btn {
+  background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #0a174e !important;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+}
+.edit-save-btn:hover {
+  background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%) !important;
+  color: #0a174e !important;
+}
+.edit-cancel-btn {
+  border-radius: 8px;
+  font-weight: 700;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 8px rgba(10,23,78,0.10);
+}
+.modal-close-btn:hover {
+  background: #FFD700 !important;
+}
+</style>

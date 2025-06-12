@@ -7,7 +7,7 @@
       </v-toolbar-title>
       <v-spacer />
       <v-btn to="/" class="gold-nav-btn" variant="text">Products</v-btn>
-      <v-btn to="/add" class="gold-nav-btn" variant="text">Add Product</v-btn>
+      <v-btn to="/lists" class="gold-nav-btn" variant="text">List</v-btn>
     </v-app-bar>
     <v-main>
       <router-view />
