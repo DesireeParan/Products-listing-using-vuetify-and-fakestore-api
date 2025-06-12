@@ -53,7 +53,7 @@ export default defineComponent({
 
 <style scoped>
 .add-product-container {
-  background: linear-gradient(135deg, #181818 0%, #232526 100%);
+  background: #fff;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -63,15 +63,15 @@ export default defineComponent({
 }
 .add-product-card {
   border-radius: 18px;
-  background: #181818;
-  color: #fff;
+  background: #fff;
+  color: #0a174e;
   border: 1.5px solid #FFD700;
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.10);
+  box-shadow: 0 8px 32px rgba(10, 23, 78, 0.10);
 }
 .add-product-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #FFD700;
+  color: #0a174e;
   display: flex;
   align-items: center;
   letter-spacing: 1px;
@@ -79,17 +79,17 @@ export default defineComponent({
 }
 .add-product-form .v-text-field,
 .add-product-form .v-textarea {
-  background: #232526;
-  color: #FFD700;
+  background: #f5f7fa;
+  color: #0a174e;
   border-radius: 8px;
 }
 .add-product-form input,
 .add-product-form textarea {
-  color: #FFD700 !important;
+  color: #0a174e !important;
 }
 .add-btn {
   background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%);
-  color: #181818 !important;
+  color: #0a174e !important;
   font-weight: 700;
   border-radius: 8px;
   border: none;
@@ -97,6 +97,6 @@ export default defineComponent({
 }
 .add-btn:hover {
   background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%);
-  color: #181818 !important;
+  color: #0a174e !important;
 }
 </style>

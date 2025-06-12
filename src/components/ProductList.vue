@@ -2,7 +2,7 @@
   <v-container class="product-list-container" fluid>
     <v-row class="mb-6" align="center" justify="space-between">
       <v-col cols="12" md="6">
-        <h1 class="display-1 font-weight-bold mb-2">Shop Products</h1>
+        <h1 class="display-1 text-black font-weight-bold mb-2">Products</h1>
         <div class="subtitle-1 text-grey-darken-1 mb-4">Discover the best deals and latest trends</div>
       </v-col>
       <v-col cols="12" md="6" class="d-flex justify-end align-center">
@@ -54,6 +54,7 @@
         </v-alert>
       </v-col>
     </v-row>
+
     <v-dialog v-model="showModal" max-width="800px">
       <v-card class="modal-card">
         <v-row>
@@ -214,7 +215,7 @@ export default defineComponent({
 
 <style scoped>
 .product-list-container {
-  background: linear-gradient(135deg, #181818 0%, #232526 100%);
+  background: #fff;
   min-height: 100vh;
   padding-top: 32px;
   padding-bottom: 32px;
@@ -223,19 +224,19 @@ export default defineComponent({
   border-radius: 18px;
   transition: box-shadow 0.2s, transform 0.2s;
   cursor: pointer;
-  background: #181818;
+  background: #fff;
   border: 1.5px solid #FFD700;
-  color: #fff;
+  color: #0a174e;
   padding-bottom: 8px;
 }
 .product-card:hover {
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.18);
+  box-shadow: 0 8px 32px rgba(10, 23, 78, 0.12);
   transform: translateY(-4px) scale(1.03);
-  border-color: #fffbe6;
+  border-color: #FFD700;
 }
 .product-image-wrapper {
   padding: 18px 18px 0 18px;
-  background: #232526;
+  background: #f5f7fa;
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   display: flex;
@@ -251,22 +252,22 @@ export default defineComponent({
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 0;
-  color: #FFD700;
+  color: #0a174e;
   letter-spacing: 0.5px;
   text-align: left;
 }
 .emphasized-title {
-  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.18);
+  text-shadow: 0 2px 8px rgba(25, 51, 102, 0.10);
 }
 .product-category {
   font-size: 0.85rem;
   letter-spacing: 1px;
   margin-bottom: 0.5rem;
-  color: #fffbe6;
+  color: #193366;
 }
 .product-description {
   font-size: 0.98rem;
-  color: #fffbe6;
+  color: #193366;
   min-height: 60px;
   font-style: italic;
 }
@@ -279,24 +280,24 @@ export default defineComponent({
 .modal-card {
   border-radius: 18px;
   padding: 24px 12px 12px 12px;
-  background: #181818;
-  color: #fff;
+  background: #fff;
+  color: #0a174e;
   border: 1.5px solid #FFD700;
 }
 .modal-title {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #FFD700;
+  color: #0a174e;
 }
 .modal-category {
   font-size: 0.95rem;
   letter-spacing: 1px;
-  color: #fffbe6;
+  color: #193366;
 }
 .modal-description {
   font-size: 1.05rem;
-  color: #fffbe6;
+  color: #193366;
   margin-bottom: 1.5rem;
 }
 .modal-price {
@@ -313,36 +314,36 @@ export default defineComponent({
 }
 .modal-image {
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(255,215,0,0.10);
-  background: #232526;
+  box-shadow: 0 4px 24px rgba(10,23,78,0.10);
+  background: #f5f7fa;
 }
 .v-btn, .v-btn--variant-elevated {
   background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%);
-  color: #181818 !important;
+  color: #0a174e !important;
   font-weight: 700;
   border-radius: 8px;
   border: none;
 }
 .v-btn:hover {
   background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%);
-  color: #181818 !important;
+  color: #0a174e !important;
 }
 .v-select, .v-text-field {
-  background: #232526;
-  color: #FFD700;
+  background: #f5f7fa;
+  color: #0a174e;
   border-radius: 8px;
 }
 .v-select input, .v-text-field input {
-  color: #FFD700;
+  color: #0a174e;
 }
 .v-alert {
-  background: #232526 !important;
-  color: #FFD700 !important;
+  background: #f5f7fa !important;
+  color: #0a174e !important;
   border-color: #FFD700 !important;
 }
 .v-chip {
   background: #FFD700 !important;
-  color: #181818 !important;
+  color: #0a174e !important;
   font-weight: 700;
 }
 .add-product-btn {
@@ -350,7 +351,7 @@ export default defineComponent({
   bottom: 32px;
   right: 32px;
   z-index: 1001;
-  box-shadow: 0 4px 24px rgba(255,215,0,0.18);
+  box-shadow: 0 4px 24px rgba(25,51,102,0.18);
 }
 @media (max-width: 960px) {
   .modal-image-col {
