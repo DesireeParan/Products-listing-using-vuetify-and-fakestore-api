@@ -1,17 +1,20 @@
 <template>
-  <v-container>
-    <v-row justify="center">
+  <v-container class="add-product-container" fluid>
+    <v-row justify="center" align="center" class="fill-height">
       <v-col cols="12" md="6">
-        <v-card>
-          <v-card-title>Add New Product</v-card-title>
+        <v-card class="add-product-card" elevation="10">
+          <v-card-title class="add-product-title">
+            <v-icon color="gold" class="mr-2">mdi-plus-box</v-icon>
+            Add New Product
+          </v-card-title>
           <v-card-text>
-            <v-form @submit.prevent="addProduct">
-              <v-text-field v-model="title" label="Title" required></v-text-field>
-              <v-text-field v-model="price" label="Price" type="number" required></v-text-field>
-              <v-textarea v-model="description" label="Description" required></v-textarea>
-              <v-text-field v-model="category" label="Category" required></v-text-field>
-              <v-text-field v-model="image" label="Image URL" required></v-text-field>
-              <v-btn type="submit" color="primary">Add Product</v-btn>
+            <v-form @submit.prevent="addProduct" class="add-product-form">
+              <v-text-field v-model="title" label="Title" required prepend-inner-icon="mdi-tag" class="mb-3" />
+              <v-text-field v-model="price" label="Price" type="number" required prepend-inner-icon="mdi-currency-usd" class="mb-3" />
+              <v-textarea v-model="description" label="Description" required prepend-inner-icon="mdi-text" class="mb-3" rows="3" auto-grow />
+              <v-text-field v-model="category" label="Category" required prepend-inner-icon="mdi-shape" class="mb-3" />
+              <v-text-field v-model="image" label="Image URL" required prepend-inner-icon="mdi-image" class="mb-3" />
+              <v-btn type="submit" color="primary" size="large" block class="add-btn" prepend-icon="mdi-plus">Add Product</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -47,3 +50,53 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.add-product-container {
+  background: linear-gradient(135deg, #181818 0%, #232526 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+.add-product-card {
+  border-radius: 18px;
+  background: #181818;
+  color: #fff;
+  border: 1.5px solid #FFD700;
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.10);
+}
+.add-product-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFD700;
+  display: flex;
+  align-items: center;
+  letter-spacing: 1px;
+  padding-bottom: 8px;
+}
+.add-product-form .v-text-field,
+.add-product-form .v-textarea {
+  background: #232526;
+  color: #FFD700;
+  border-radius: 8px;
+}
+.add-product-form input,
+.add-product-form textarea {
+  color: #FFD700 !important;
+}
+.add-btn {
+  background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%);
+  color: #181818 !important;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+  margin-top: 12px;
+}
+.add-btn:hover {
+  background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%);
+  color: #181818 !important;
+}
+</style>

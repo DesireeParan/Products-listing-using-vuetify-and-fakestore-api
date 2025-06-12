@@ -76,6 +76,30 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Add Product Dialog -->
+    <v-dialog v-model="showAddProduct" max-width="600px">
+      <v-card class="modal-card">
+        <v-card-title class="modal-title">Add New Product</v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="addProduct">
+            <v-text-field v-model="newProduct.title" label="Title" required class="mb-2" />
+            <v-text-field v-model="newProduct.price" label="Price" type="number" required class="mb-2" />
+            <v-textarea v-model="newProduct.description" label="Description" required class="mb-2" />
+            <v-text-field v-model="newProduct.category" label="Category" required class="mb-2" />
+            <v-text-field v-model="newProduct.image" label="Image URL" required class="mb-2" />
+            <v-btn type="submit" color="primary" class="mt-2">Add Product</v-btn>
+          </v-form>
+        </v-card-text>
+        <v-card-actions class="d-flex justify-end">
+          <v-btn color="primary" text @click="showAddProduct = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-btn color="primary" class="add-product-btn" @click="showAddProduct = true" prepend-icon="mdi-plus">
+      Add Product
+    </v-btn>
   </v-container>
 </template>
 
@@ -106,6 +130,14 @@ export default defineComponent({
     const showModal = ref(false);
     const selectedProduct = ref<Product | null>(null);
     const availableColors = ref<string[]>([]);
+    const showAddProduct = ref(false);
+    const newProduct = ref({
+      title: '',
+      price: '',
+      description: '',
+      category: '',
+      image: ''
+    });
 
     const fetchProducts = async () => {
       const response = await axios.get('https://fakestoreapi.com/products');
@@ -154,11 +186,27 @@ export default defineComponent({
       showModal.value = true;
     }
 
+    function addProduct() {
+      if (!newProduct.value.title || !newProduct.value.price || !newProduct.value.description || !newProduct.value.category || !newProduct.value.image) return;
+      const id = products.value.length ? Math.max(...products.value.map(p => p.id)) + 1 : 1;
+      products.value.unshift({
+        id,
+        title: newProduct.value.title,
+        price: parseFloat(newProduct.value.price),
+        description: newProduct.value.description,
+        category: newProduct.value.category,
+        image: newProduct.value.image
+      });
+      showAddProduct.value = false;
+      newProduct.value = { title: '', price: '', description: '', category: '', image: '' };
+    }
+
     onMounted(fetchProducts);
 
     return {
       products, search, selectedCategory, categories, filteredProducts, downloadProducts,
-      showModal, selectedProduct, openProduct, getCuriosityDescription, availableColors
+      showModal, selectedProduct, openProduct, getCuriosityDescription, availableColors,
+      showAddProduct, newProduct, addProduct
     };
   }
 });
@@ -166,7 +214,7 @@ export default defineComponent({
 
 <style scoped>
 .product-list-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #181818 0%, #232526 100%);
   min-height: 100vh;
   padding-top: 32px;
   padding-bottom: 32px;
@@ -175,16 +223,19 @@ export default defineComponent({
   border-radius: 18px;
   transition: box-shadow 0.2s, transform 0.2s;
   cursor: pointer;
-  background: #fff;
+  background: #181818;
+  border: 1.5px solid #FFD700;
+  color: #fff;
   padding-bottom: 8px;
 }
 .product-card:hover {
-  box-shadow: 0 8px 32px rgba(60,60,60,0.18);
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.18);
   transform: translateY(-4px) scale(1.03);
+  border-color: #fffbe6;
 }
 .product-image-wrapper {
   padding: 18px 18px 0 18px;
-  background: #f8f8f8;
+  background: #232526;
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   display: flex;
@@ -200,53 +251,57 @@ export default defineComponent({
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 0;
-  color: #222;
+  color: #FFD700;
   letter-spacing: 0.5px;
   text-align: left;
 }
 .emphasized-title {
-  text-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.18);
 }
 .product-category {
   font-size: 0.85rem;
   letter-spacing: 1px;
   margin-bottom: 0.5rem;
+  color: #fffbe6;
 }
 .product-description {
   font-size: 0.98rem;
-  color: #555;
+  color: #fffbe6;
   min-height: 60px;
   font-style: italic;
 }
 .product-price {
   font-size: 1.2rem;
-  color: #1976d2;
+  color: #FFD700;
 }
 
 /* Modal styles */
 .modal-card {
   border-radius: 18px;
   padding: 24px 12px 12px 12px;
-  background: #fff;
+  background: #181818;
+  color: #fff;
+  border: 1.5px solid #FFD700;
 }
 .modal-title {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #222;
+  color: #FFD700;
 }
 .modal-category {
   font-size: 0.95rem;
   letter-spacing: 1px;
+  color: #fffbe6;
 }
 .modal-description {
   font-size: 1.05rem;
-  color: #444;
+  color: #fffbe6;
   margin-bottom: 1.5rem;
 }
 .modal-price {
   font-size: 1.2rem;
-  color: #1976d2;
+  color: #FFD700;
 }
 .modal-colors {
   margin-bottom: 1rem;
@@ -258,8 +313,44 @@ export default defineComponent({
 }
 .modal-image {
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(60,60,60,0.10);
-  background: #f8f8f8;
+  box-shadow: 0 4px 24px rgba(255,215,0,0.10);
+  background: #232526;
+}
+.v-btn, .v-btn--variant-elevated {
+  background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%);
+  color: #181818 !important;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+}
+.v-btn:hover {
+  background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%);
+  color: #181818 !important;
+}
+.v-select, .v-text-field {
+  background: #232526;
+  color: #FFD700;
+  border-radius: 8px;
+}
+.v-select input, .v-text-field input {
+  color: #FFD700;
+}
+.v-alert {
+  background: #232526 !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+}
+.v-chip {
+  background: #FFD700 !important;
+  color: #181818 !important;
+  font-weight: 700;
+}
+.add-product-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 1001;
+  box-shadow: 0 4px 24px rgba(255,215,0,0.18);
 }
 @media (max-width: 960px) {
   .modal-image-col {
