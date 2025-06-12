@@ -10,7 +10,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "VITE_BASE=/Products-listing-using-vuetify-and-fakestore-api/ gh-pages -d dist"
   },
   "dependencies": {
     "@fontsource/roboto": "5.2.5",

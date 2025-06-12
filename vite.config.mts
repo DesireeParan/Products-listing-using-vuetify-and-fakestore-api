@@ -10,9 +10,9 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production'
+  base: process.env.VITE_BASE || (process.env.NODE_ENV === 'production'
     ? '/Products-listing-using-vuetify-and-fakestore-api/'
-    : '/',
+    : '/'),
   plugins: [
     Vue({
       template: { transformAssetUrls },
