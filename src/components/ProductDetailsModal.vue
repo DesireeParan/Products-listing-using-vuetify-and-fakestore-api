@@ -2,6 +2,13 @@
   <v-dialog v-model="show" max-width="1200px" height="900px" persistent>
     <v-card class="modal-card">
       <v-row>
+        <v-col cols="12" class="d-flex justify-end align-center pa-0">
+          <v-btn icon class="modal-close-btn" @click="$emit('close')" aria-label="Close">
+            <v-icon color="#0a174e">mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="12" md="6" class="modal-image-col ">
           <v-img :src="product?.image" height="520px" max-width="100%" class="modal-image" cover></v-img>
           <div class="modal-sizes mb-2">
@@ -108,9 +115,6 @@
           </div>
         </v-col>
       </v-row>
-      <v-card-actions class="d-flex justify-end">
-        <v-btn color="#FFD700;" text @click="$emit('close')">Close</v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -152,3 +156,18 @@ export default defineComponent({
 </script>
 
 <style src="@/assets/css/product_details.css"></style>
+
+<style>
+/* Add style for the close button */
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 8px rgba(10,23,78,0.10);
+}
+.modal-close-btn:hover {
+  background: #FFD700 !important;
+}
+</style>
