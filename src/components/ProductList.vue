@@ -55,49 +55,20 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="showModal" max-width="800px">
-      <v-card class="modal-card">
-        <v-row>
-          <v-col cols="12" md="6" class="modal-description-col">
-            <h2 class="modal-title">{{ selectedProduct?.title }}</h2>
-            <div class="modal-category text-uppercase text-grey-darken-1 mb-2">{{ selectedProduct?.category }}</div>
-            <div class="modal-description mb-4">{{ selectedProduct?.description }}</div>
-            <div class="modal-price mb-2">Price: <span class="font-weight-bold">${{ selectedProduct?.price.toFixed(2) }}</span></div>
-            <div class="modal-colors mb-2">
-              <span class="font-weight-bold">Available Colors:</span>
-              <v-chip v-for="color in availableColors" :key="color" class="ma-1" color="primary" text-color="white">{{ color }}</v-chip>
-            </div>
-          </v-col>
-          <v-col cols="12" md="6" class="modal-image-col d-flex align-center justify-center">
-            <v-img :src="selectedProduct?.image" height="320px" max-width="100%" class="modal-image" cover></v-img>
-          </v-col>
-        </v-row>
-        <v-card-actions class="d-flex justify-end">
-          <v-btn color="primary" text @click="showModal = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- View Details Modal -->
+    <ProductDetailsModal
+      :show="showModal"
+      :product="selectedProduct"
+      :colors="availableColors"
+      @close="showModal = false"
+    />
 
     <!-- Add Product Dialog -->
-    <v-dialog v-model="showAddProduct" max-width="600px">
-      <v-card class="modal-card">
-        <v-card-title class="modal-title">Add New Product</v-card-title>
-        <v-card-text>
-          <v-form @submit.prevent="addProduct">
-            <v-text-field v-model="newProduct.title" label="Title" required class="mb-2" />
-            <v-text-field v-model="newProduct.price" label="Price" type="number" required class="mb-2" />
-            <v-textarea v-model="newProduct.description" label="Description" required class="mb-2" />
-            <v-text-field v-model="newProduct.category" label="Category" required class="mb-2" />
-            <v-text-field v-model="newProduct.image" label="Image URL" required class="mb-2" />
-            <v-btn type="submit" color="primary" class="mt-2">Add Product</v-btn>
-          </v-form>
-        </v-card-text>
-        <v-card-actions class="d-flex justify-end">
-          <v-btn color="primary" text @click="showAddProduct = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
+    <AddProductModal
+      :show="showAddProduct"
+      @add="addProductFromModal"
+      @close="showAddProduct = false"
+    />
     <v-btn color="primary" class="add-product-btn" @click="showAddProduct = true" prepend-icon="mdi-plus">
       Add Product
     </v-btn>
@@ -107,6 +78,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed } from 'vue';
 import axios from 'axios';
+import AddProductModal from './AddProductModal.vue';
+import ProductDetailsModal from './ProductDetailsModal.vue';
 
 interface Product {
   id: number;
@@ -123,6 +96,7 @@ const COLOR_PALETTE = [
 
 export default defineComponent({
   name: 'ProductList',
+  components: { AddProductModal, ProductDetailsModal },
   setup() {
     const products = ref<Product[]>([]);
     const search = ref('');
@@ -202,12 +176,25 @@ export default defineComponent({
       newProduct.value = { title: '', price: '', description: '', category: '', image: '' };
     }
 
+    function addProductFromModal(product: any) {
+      const id = products.value.length ? Math.max(...products.value.map(p => p.id)) + 1 : 1;
+      products.value.unshift({
+        id,
+        title: product.title,
+        price: parseFloat(product.price),
+        description: product.description,
+        category: product.category,
+        image: product.image
+      });
+      showAddProduct.value = false;
+    }
+
     onMounted(fetchProducts);
 
     return {
       products, search, selectedCategory, categories, filteredProducts, downloadProducts,
       showModal, selectedProduct, openProduct, getCuriosityDescription, availableColors,
-      showAddProduct, newProduct, addProduct
+      showAddProduct, newProduct, addProduct, addProductFromModal
     };
   }
 });
