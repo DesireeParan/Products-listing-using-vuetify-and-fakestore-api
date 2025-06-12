@@ -4,14 +4,14 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-  "dev": "vite",
-  "build": "run-p type-check \"build-only {@}\" --",
-  "preview": "vite preview",
-  "build-only": "vite build",
-  "type-check": "vue-tsc --build --force",
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d dist"
-},
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --force",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
   "dependencies": {
     "@fontsource/roboto": "5.2.5",
     "@mdi/font": "7.4.47",
@@ -37,6 +37,4 @@
     "vue-tsc": "^2.2.8"
   },
   "homepage": "https://DesireeParan.github.io/Products-listing-using-vuetify-and-fakestore-api"
-
-  
 }
