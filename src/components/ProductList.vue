@@ -1,112 +1,118 @@
 <template>
-  <v-container class="product-list-container" fluid>
+  <v-container class="product-list-modern" fluid>
     <v-row>
       <!-- Sidebar Navigation Drawer for Categories -->
       <v-navigation-drawer
         app
         permanent
-        width="240"
-        class="category-sidebar"
-        color="#f5f7fa"
+        width="220"
+        class="category-sidebar-modern"
+        color="#f8fafc"
         style="border-right: 1.5px solid #FFD700;"
       >
-        <div class="sidebar-title font-weight-bold mb-4 mt-2" style="font-size:1.2rem; color:#0a174e;">Categories</div>
-        <v-list nav dense>
-          <v-list-item
-            :active="!selectedCategory"
-            @click="selectedCategory = ''"
-            class="category-list-item"
-          >
-            <v-list-item-title>All</v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            v-for="cat in categories"
+        <div class="sidebar-title-modern mb-4 mt-2">Categories</div>
+        <div class="category-box-group-modern">
+          <v-btn
+            v-for="cat in ['All', ...categories]"
             :key="cat"
-            :active="selectedCategory === cat"
-            @click="selectedCategory = cat"
-            class="category-list-item"
+            :class="['category-box-btn-modern', { active: selectedCategory === (cat === 'All' ? '' : cat) }]"
+            rounded
+            size="small"
+            @click="selectedCategory = (cat === 'All' ? '' : cat)"
           >
-            <v-list-item-title>{{ cat }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-        <!-- Sort filter below categories -->
-        <div class="sidebar-sort-title mt-6 mb-2" style="margin-left:16px; color:#0a174e; font-weight:600; font-size:1.05rem;">Sort By</div>
-        <v-list nav dense>
-          <v-list-item
-            :active="sortOption === 'popular'"
-            @click="sortOption = 'popular'"
-            class="sidebar-sort-item"
+            {{ cat }}
+          </v-btn>
+        </div>
+        <div class="sidebar-sort-title-modern mt-8 mb-2">Sort By</div>
+        <div class="sort-box-group-modern">
+          <v-btn
+            v-for="opt in sortOptions"
+            :key="opt.value"
+            :class="['sort-box-btn-modern', { active: sortOption === opt.value }]"
+            rounded
+            size="small"
+            @click="sortOption = opt.value"
           >
-            <v-list-item-title>Popular</v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            :active="sortOption === 'price-asc'"
-            @click="sortOption = 'price-asc'"
-            class="sidebar-sort-item"
-          >
-            <v-list-item-title>Price: Low to High</v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            :active="sortOption === 'price-desc'"
-            @click="sortOption = 'price-desc'"
-            class="sidebar-sort-item"
-          >
-            <v-list-item-title>Price: High to Low</v-list-item-title>
-          </v-list-item>
-        </v-list>
+            {{ opt.title }}
+          </v-btn>
+        </div>
       </v-navigation-drawer>
       <v-col>
-        <v-row class="mb-6" align="center" justify="space-between">
-          <v-col cols="12" md="6">
-            <h1 class="display-1 text-black font-weight-bold mb-2">Products</h1>
-            <div class="subtitle-1 text-grey-darken-1 mb-4">Discover the best deals and latest trends</div>
-          </v-col>
-          <v-col cols="12" md="6" class="d-flex justify-end align-center">
-            <v-btn color="primary" @click="downloadProducts" size="large" prepend-icon="mdi-download">
-              Download Products JSON
-            </v-btn>
+        <v-row class="mb-8 align-center justify-space-between">
+          <v-col cols="12" md="8">
+            <h1 class="modern-title mb-2">Shop</h1>
+            <div class="modern-subtitle mb-4">
+              <v-icon color="#FFD700" class="mr-2">mdi-star-four-points</v-icon>
+              <span>Discover curated products, exclusive deals, and new arrivals.</span>
+            </div>
           </v-col>
         </v-row>
-        <v-row class="mb-4">
-          <v-col cols="12" md="6">
+        <v-row class="mb-6 align-center">
+          <v-col cols="12" md="8" class="d-flex align-center">
             <v-text-field
               v-model="search"
-              label="Search products..."
+              label="Search for anything..."
               prepend-inner-icon="mdi-magnify"
               clearable
+              class="search-bar-modern"
+              hide-details
+              style="flex:1; min-width:0;"
             />
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-select
-              v-model="selectedCategory"
-              :items="categories"
-              label="Filter by Category"
-              clearable
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <v-select
-              v-model="sortOption"
-              :items="sortOptions"
-              label="Sort by"
-              clearable
-            />
+            <div class="searchbar-icons-modern d-flex align-center ml-4" style="gap: 1.2rem;">
+              <v-btn icon variant="text" class="icon-btn-modern" aria-label="Cart">
+                <v-icon size="28" color="#0a174e">mdi-cart-outline</v-icon>
+              </v-btn>
+              <v-btn icon variant="text" class="icon-btn-modern" aria-label="Notifications">
+                <v-icon size="28" color="#0a174e">mdi-bell-outline</v-icon>
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col v-for="product in filteredProducts" :key="product.id" cols="12" sm="6" md="4" lg="3">
-            <v-card class="product-card" elevation="8" hover @click="openProduct(product)">
-              <div class="product-image-wrapper">
-                <v-img :src="product.image" height="200px" class="product-image" cover></v-img>
+        <!-- Inline Category and Sort Controls -->
+        <v-row class="mb-6 align-center justify-space-between">
+          <v-col cols="12" md="8">
+            <div class="inline-category-sort-group d-flex align-center flex-wrap" style="gap: 1.5rem;">
+              <div class="inline-category-box-group d-flex align-center flex-wrap" style="gap: 0.5rem;">
+                <span class="mr-2" style="font-weight:600;color:#0a174e;">Category:</span>
+                <v-btn
+                  v-for="cat in ['All', ...categories]"
+                  :key="cat + '-inline'"
+                  :class="['category-box-btn-modern', { active: selectedCategory === (cat === 'All' ? '' : cat) }]"
+                  rounded
+                  size="small"
+                  @click="selectedCategory = (cat === 'All' ? '' : cat)"
+                >
+                  {{ cat }}
+                </v-btn>
               </div>
-              <v-card-title class="product-title emphasized-title text-truncate">{{ product.title }}</v-card-title>
-              <v-card-subtitle class="product-category text-uppercase text-grey-darken-1">{{ product.category }}</v-card-subtitle>
-              <v-card-text class="product-description">
+              <div class="inline-sort-box-group d-flex align-center flex-wrap" style="gap: 0.5rem;">
+                <span class="mr-2" style="font-weight:600;color:#0a174e;">Sort by:</span>
+                <v-btn
+                  v-for="opt in sortOptions"
+                  :key="opt.value + '-inline'"
+                  :class="['sort-box-btn-modern', { active: sortOption === opt.value }]"
+                  rounded
+                  size="small"
+                  @click="sortOption = opt.value"
+                >
+                  {{ opt.title }}
+                </v-btn>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row class="product-grid-modern" dense>
+          <v-col v-for="product in filteredProducts" :key="product.id" cols="12" sm="6" md="4" lg="3">
+            <v-card class="product-card-modern" elevation="2" hover @click="openProduct(product)">
+              <v-img :src="product.image" height="180px" class="product-image-modern" cover></v-img>
+              <v-card-title class="product-title-modern text-truncate">{{ product.title }}</v-card-title>
+              <v-card-subtitle class="product-category-modern text-uppercase">{{ product.category }}</v-card-subtitle>
+              <v-card-text class="product-description-modern">
                 {{ getCuriosityDescription(product.description) }}
               </v-card-text>
               <v-card-actions class="d-flex justify-space-between align-center">
-                <div class="product-price font-weight-bold">₱{{ (product.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                {{ formatSold(product.sold) }} sold
+                <div class="product-price-modern">₱{{ (product.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                <span class="sold-modern">{{ formatSold(product.sold) }} sold</span>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -133,7 +139,11 @@
           @add="addProductFromModal"
           @close="showAddProduct = false"
         />
-        <v-btn color="primary" class="add-product-btn" @click="showAddProduct = true" prepend-icon="mdi-plus">
+        <!-- Floating Message Icon Button -->
+        <v-btn icon class="message-btn-modern" aria-label="Messages">
+          <v-icon size="30" color="#0a174e">mdi-message-outline</v-icon>
+        </v-btn>
+        <v-btn color="primary" class="add-product-btn-modern" @click="showAddProduct = true" prepend-icon="mdi-plus">
           Add Product
         </v-btn>
       </v-col>
@@ -248,9 +258,9 @@ export default defineComponent({
 
     function getCuriosityDescription(desc: string) {
       if (desc.length > 60) {
-        return desc.slice(0, 60) + '... Discover more!';
+        return desc.slice(0, 60) + '...';
       }
-      return desc + '... Discover more!';
+      return desc + '...';
     }
 
     function openProduct(product: Product) {
@@ -338,191 +348,243 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.product-list-container {
-  background: #fff;
+.product-list-modern {
+  background: linear-gradient(120deg, #ffffff 0%, #f5f7fa 100%);
   min-height: 100vh;
   padding-top: 32px;
   padding-bottom: 32px;
 }
-.product-card {
-  border-radius: 18px;
-  transition: box-shadow 0.2s, transform 0.2s;
-  cursor: pointer;
+.category-sidebar-modern {
+  min-width: 180px;
+  max-width: 220px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-top: 32px;
+}
+.sidebar-title-modern {
+  color: #0a174e;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-left: 8px;
+  letter-spacing: 1px;
+}
+.category-box-group-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.category-box-btn-modern {
+  background: transparent !important;
+  border: none !important;
+  color: #0a174e !important;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: 2px;
+  box-shadow: none !important;
+}
+.category-box-btn-modern.active,
+.category-box-btn-modern[aria-pressed="true"] {
+  text-decoration: underline;
+  background: transparent !important;
+  color: #FFD700 !important;
+}
+.sidebar-sort-title-modern {
+  color: #0a174e;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+}
+.sort-box-group-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.sort-box-btn-modern {
+  background: transparent !important;
+  border: none !important;
+  color: #0a174e !important;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: 2px;
+  box-shadow: none !important;
+}
+.sort-box-btn-modern.active,
+.sort-box-btn-modern[aria-pressed="true"] {
+  text-decoration: underline;
+  background: transparent !important;
+  color: #FFD700 !important;
+}
+.modern-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0a174e;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+.modern-subtitle {
+  font-size: 1.15rem;
+  color: #193366;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+.search-bar-modern {
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 8px;
+  background: #ffffff !important;
+  color: #0a174e !important;
+}
+.search-bar-modern .v-input__control {
+  background: transparent !important;
+  border-radius: 0;
+  border: none !important;
+  border-bottom: 2px solid #0a174e !important;
+  color: #0a174e !important;
+  box-shadow: none !important;
+}
+.search-bar-modern input {
+  color: #0a174e !important;
+  font-size: 1.08rem;
+  font-weight: 700;
+  background: transparent !important;
+}
+.inline-category-sort-group {
+  margin-bottom: 2rem;
+}
+.inline-category-box-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.inline-sort-box-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.product-grid-modern {
+  margin-top: 12px;
+  row-gap: 32px;
+  /* column-gap: 10px; */
+  margin: 0 auto;
+  display: flex;
+}
+.product-card-modern {
+  border-radius: 4px !important;
   background: #fff;
   border: 1.5px solid #FFD700;
   color: #0a174e;
-  padding-bottom: 8px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+  padding: 1.5rem;
+  max-width: 350px;
+  min-height: 370px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0 !important;
 }
-.product-card:hover {
-  box-shadow: 0 8px 32px rgba(10, 23, 78, 0.12);
+.product-card-modern:hover {
   transform: translateY(-4px) scale(1.03);
   border-color: #FFD700;
 }
-.product-image-wrapper {
-  padding: 16px;
-  background: transparent;
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 180px;
-  overflow: hidden;
-}
-.product-image {
+.product-image-modern {
   object-fit: contain;
-  background: transparent;
-  border-radius: 12px;
+  background: #f8fafc;
   width: 100%;
   height: 180px;
   max-width: 180px;
   max-height: 180px;
-  display: block;
-  margin: 0 auto;
+  margin: 20px auto;
+
 }
-.product-title {
-  font-size: 1.2rem;
+.product-title-modern {
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0;
   color: #0a174e;
   letter-spacing: 0.5px;
+  margin-top: 8px;
+  margin-bottom: 0;
   text-align: left;
 }
-.emphasized-title {
-  text-shadow: 0 2px 8px rgba(25, 51, 102, 0.10);
-}
-.product-category {
+.product-category-modern {
   font-size: 0.85rem;
   letter-spacing: 1px;
   margin-bottom: 0.5rem;
   color: #193366;
 }
-.product-description {
+.product-description-modern {
   font-size: 0.98rem;
   color: #193366;
-  min-height: 60px;
+  min-height: 48px;
   font-style: italic;
-}
-.product-price {
-  font-size: 1.2rem;
-  background-color: #193366;
-  color: #FFD700;
-  padding: 0.2rem 0.5rem;
-  border-radius: 8px;
-}
-.product-meta {
-  font-size: 0.9rem;
-  color: #193366;
-}
-.sold-count, .available-count {
-  display: inline-block;
-  margin-right: 16px;
-}
-
-/* Modal styles */
-.modal-card {
-  border-radius: 18px;
-  padding: 24px 12px 12px 12px;
-  background: #fff;
-  color: #0a174e;
-  border: 1.5px solid #FFD700;
-}
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #0a174e;
 }
-.modal-category {
-  font-size: 0.95rem;
-  letter-spacing: 1px;
-  color: #193366;
-}
-.modal-description {
-  font-size: 1.05rem;
-  color: #193366;
-  margin-bottom: 1.5rem;
-}
-.modal-price {
-  font-size: 1.2rem;
-  color: #FFD700;
-}
-.modal-colors {
-  margin-bottom: 1rem;
-}
-.modal-image-col {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal-image {
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(10,23,78,0.10);
-  background: #f5f7fa;
-}
-.v-btn, .v-btn--variant-elevated {
+.product-price-modern {
+  font-size: 1.15rem;
   background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%);
-  color: #0a174e !important;
-  font-weight: 700;
-  border-radius: 8px;
-  border: none;
-}
-.v-btn:hover {
-  background: linear-gradient(90deg, #fffbe6 0%, #FFD700 100%);
-  color: #0a174e !important;
-}
-.v-select, .v-text-field {
-  background: #f5f7fa;
   color: #0a174e;
+  padding: 0.2rem 0.7rem;
   border-radius: 8px;
-}
-.v-select input, .v-text-field input {
-  color: #0a174e;
-}
-.v-alert {
-  background: #f5f7fa !important;
-  color: #0a174e !important;
-  border-color: #FFD700 !important;
-}
-.v-chip {
-  background: #FFD700 !important;
-  color: #0a174e !important;
   font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.10);
 }
-.add-product-btn {
+.sold-modern {
+  font-size: 0.98rem;
+  color: #193366;
+  font-weight: 500;
+}
+.add-product-btn-modern {
   position: fixed;
   bottom: 32px;
   right: 32px;
   z-index: 1001;
+  background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%) !important;
+  color: #0a174e !important;
+  font-weight: 700;
+  border-radius: 12px;
   box-shadow: 0 4px 24px rgba(25,51,102,0.18);
+  font-size: 1.1rem;
 }
-.category-sidebar {
-  min-width: 200px;
-  max-width: 260px;
-  background: #f5f7fa !important;
-  border-right: 1.5px solid #FFD700;
-  padding-top: 24px;
+.message-btn-modern {
+  position: fixed;
+  bottom: 92px;
+  right: 40px;
+  z-index: 1002;
+  background: #fff !important;
+  color: #0a174e !important;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px rgba(25,51,102,0.10);
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
 }
-.sidebar-title {
-  color: #0a174e;
-  font-size: 1.2rem;
-  margin-left: 16px;
-}
-.category-list-item {
-  cursor: pointer;
-  border-radius: 8px;
-  margin: 2px 8px;
-  transition: background 0.2s;
-}
-.category-list-item[active], .category-list-item.v-list-item--active {
+.message-btn-modern:hover {
   background: #FFD700 !important;
   color: #0a174e !important;
 }
-
-
 @media (max-width: 960px) {
-  .category-sidebar {
+  .category-sidebar-modern {
     display: none;
+  }
+  .add-product-btn-modern {
+    right: 16px;
+    bottom: 16px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+  }
+  .message-btn-modern {
+    right: 24px;
+    bottom: 76px;
+    width: 46px;
+    height: 46px;
   }
 }
 </style>
