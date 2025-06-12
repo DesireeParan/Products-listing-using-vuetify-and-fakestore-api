@@ -78,7 +78,7 @@ Maria Desiree Paran is a dedicated PHP Laravel developer with strong experience 
 ### 7. Cloning and Running on Another Machine or IDE (VSCode, etc.)
 1. Clone the repository:
    ```sh
-   git clone <your-repo-url>
+   git clone https://github.com/DesireeParan/Products-listing-using-vuetify-and-fakestore-api
    cd vuetify-project
    ```
 2. Install dependencies:
