@@ -10,6 +10,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/vuetify-project/', // Set base to match GitHub repo name
   plugins: [
     Vue({
       template: { transformAssetUrls },
