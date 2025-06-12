@@ -144,6 +144,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed } from 'vue';
 import axios from 'axios';
+import { sharedProducts, sharedCategories } from './productStore';
 import AddProductModal from './AddProductModal.vue';
 import ProductDetailsModal from './ProductDetailsModal.vue';
 
@@ -164,10 +165,11 @@ export default defineComponent({
   name: 'ProductList',
   components: { AddProductModal, ProductDetailsModal },
   setup() {
-    const products = ref<Product[]>([]);
+    // Use shared state
+    const products = sharedProducts;
+    const categories = sharedCategories;
     const search = ref('');
     const selectedCategory = ref('');
-    const categories = ref<string[]>([]);
     const showModal = ref(false);
     const selectedProduct = ref<Product | null>(null);
     const availableColors = ref<string[]>([]);
@@ -190,13 +192,23 @@ export default defineComponent({
 
     const fetchProducts = async () => {
       const response = await axios.get('https://fakestoreapi.com/products');
-      // Add fake sold and available data for demo
-      products.value = response.data.map((p: Product) => ({
+      const apiProducts = response.data.map((p: Product) => ({
         ...p,
-        sold: Math.floor(Math.random() * 500) + 10, // 10-509 sold
-        available: Math.floor(Math.random() * 100) + 1 // 1-100 available
+        sold: Math.floor(Math.random() * 500) + 10,
+        available: Math.floor(Math.random() * 100) + 1
       }));
-      categories.value = Array.from(new Set(response.data.map((p: Product) => p.category)));
+      // Only set if not already loaded
+      if (products.value.length === 0) {
+        products.value.push(...apiProducts);
+      }
+      categories.value.splice(0, categories.value.length, ...Array.from(new Set(apiProducts.map((p: Product) => p.category))));
+      // Load user-added products
+      const userProducts = JSON.parse(localStorage.getItem('userProducts') || '[]');
+      for (const up of userProducts) {
+        if (!products.value.some(p => p.id === up.id)) {
+          products.value.unshift(up);
+        }
+      }
     };
 
     const downloadProducts = () => {
@@ -263,16 +275,46 @@ export default defineComponent({
       newProduct.value = { title: '', price: '', description: '', category: '', image: '' };
     }
 
+    // --- Sync with localStorage for cross-page persistence ---
+    // Load user-added products from localStorage
+    onMounted(async () => {
+      if (products.value.length === 0) {
+        const response = await axios.get('https://fakestoreapi.com/products');
+        const apiProducts = response.data.map((p: any) => ({
+          ...p,
+          sold: Math.floor(Math.random() * 500) + 10,
+          available: Math.floor(Math.random() * 100) + 1
+        }));
+        products.value.push(...apiProducts);
+        categories.value.splice(0, categories.value.length, ...Array.from(new Set(apiProducts.map((p: any) => p.category))));
+      }
+      // Load user-added products
+      const userProducts = JSON.parse(localStorage.getItem('userProducts') || '[]');
+      for (const up of userProducts) {
+        if (!products.value.some(p => p.id === up.id)) {
+          products.value.unshift(up);
+        }
+      }
+    });
+
+    // Save user-added products to localStorage whenever a new one is added
     function addProductFromModal(product: any) {
-      const id = products.value.length ? Math.max(...products.value.map(p => p.id)) + 1 : 1;
-      products.value.unshift({
+      const userProducts = JSON.parse(localStorage.getItem('userProducts') || '[]');
+      const id = userProducts.length ? Math.max(...userProducts.map((p: any) => p.id)) + 1 : (products.value.length ? Math.max(...products.value.map(p => p.id)) + 1 : 1);
+      const userProduct = {
         id,
         title: product.title,
         price: parseFloat(product.price),
         description: product.description,
         category: product.category,
-        image: product.image
-      });
+        image: product.image,
+        available: product.quantity ?? 1,
+        sold: 0,
+        isUserAdded: true
+      };
+      products.value.unshift(userProduct);
+      userProducts.unshift(userProduct);
+      localStorage.setItem('userProducts', JSON.stringify(userProducts));
       showAddProduct.value = false;
     }
 

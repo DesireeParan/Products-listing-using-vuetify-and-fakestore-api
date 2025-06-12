@@ -26,7 +26,14 @@
               </template>
               <template #item.price="{ item }">
                 <div class="center-col" style="flex:1 0 0; min-width:120px;">
-                  <span class="product-price navy-blur-bg">₱{{ (item.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                  <span class="product-price navy-blur-bg">
+                    <template v-if="item.isUserAdded">
+                      ₱{{ Number(item.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </template>
+                    <template v-else>
+                      ₱{{ (item.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </template>
+                  </span>
                 </div>
               </template>
               <template #item.description="{ item }">
@@ -146,7 +153,15 @@ export default defineComponent({
 
     function addProductFromModal(product: any) {
       const id = products.value.length ? Math.max(...products.value.map(p => p.id || 0)) + 1 : 1;
-      products.value.push({ ...product, id, available: product.available ?? 1 });
+      // Use the quantity from the modal as available, and use the price as entered (number)
+      products.value.push({
+        ...product,
+        id,
+        available: product.quantity ?? 1,
+        price: Number(product.price), // ensure price is a number, not a string
+        // Add a flag to distinguish user-added products
+        isUserAdded: true
+      });
       showAddProduct.value = false;
     }
 
