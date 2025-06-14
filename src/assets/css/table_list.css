@@ -1,0 +1,103 @@
+/* ProductMgmt Table Styles - improved for real table and new layout */
+.add-product-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #fdfcfc;
+    box-shadow: none;
+}
+
+.add-product-card {
+  background-color: #ffffff;
+  color:#0a174e;
+  box-shadow: none;
+}
+
+.table-list-custom-table {
+  background: transparent;
+  color:#0a174e;
+}
+
+.table-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.table-list-table thead tr {
+  background: #f5f7fa;
+}
+.table-list-table th, .table-list-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+.table-list-table th {
+  font-weight: 700;
+  color: #0a174e;
+  font-size: 1.05rem;
+}
+.table-list-table tbody tr:hover {
+  background: #f9fafc;
+}
+.table-list-center-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.table-list-action-icons {
+  gap: 12px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.table-list-action-btn {
+  /* box-shadow: none !important; */
+  margin: 0 2px;
+  transition: background 0.2s;
+}
+.table-list-edit-btn {
+  background: transparent !important;
+  color: #0a174e !important;
+}
+
+.table-list-delete-btn {
+  background: transparent !important;
+  color: #e24646 !important;
+}
+
+.table-list-product-price {
+  font-weight: 600;
+  color: #0a174e;
+  background: #f5f7fa;
+  border-radius: 6px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+.table-list-description {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+.table-list-search-bar {
+  min-width: 180px;
+  max-width: 250px;
+  background: #fff !important;
+}
+.table-list-add-btn {
+  background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #0a174e !important;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+}

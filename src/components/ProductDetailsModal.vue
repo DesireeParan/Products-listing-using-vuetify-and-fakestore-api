@@ -159,17 +159,3 @@ export default defineComponent({
 
 <style src="@/assets/css/product_details.css"></style>
 
-<style>
-/* Add style for the close button */
-.modal-close-btn {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  z-index: 10;
-  background: rgba(255,255,255,0.85);
-  box-shadow: 0 2px 8px rgba(10,23,78,0.10);
-}
-.modal-close-btn:hover {
-  background: #FFD700 !important;
-}
-</style>

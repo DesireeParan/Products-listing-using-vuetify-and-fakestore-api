@@ -218,9 +218,7 @@ v-btn {
   -webkit-appearance: none;
   margin: 0;
 }
-.quantity-input input[type="number"] {
-  -moz-appearance: textfield;
-}
+
 .discount-message {
   display: block;
   font-size: 1.1rem;
@@ -307,4 +305,17 @@ v-btn {
   font-size: 1.1em;
   margin-right: 6px;
   box-sizing: content-box;
+}
+
+/* Add style for the close button */
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 8px rgba(10,23,78,0.10);
+}
+.modal-close-btn:hover {
+  background: #FFD700 !important;
 }
