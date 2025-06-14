@@ -3,12 +3,17 @@
     <v-row justify="center" align="center" class="fill-height">
       <v-col cols="12" md="10">
         <v-card class="add-product-card" elevation="10">
-          <v-card-title class="table-list-add-product-title mb-6 d-flex align-center justify-space-between">
-            <div class="d-flex align-center" style="gap: 12px;">
-              <v-icon class="mr-2">mdi-plus-box</v-icon>
+          <!-- Always show title at the top -->
+          <div class="d-flex align-center table-list-title-label table-list-title-mobile mb-2">
+            <v-icon color="#FFD700" class="mr-2">mdi-plus-box</v-icon>
+            Product Management
+          </div>
+          <v-card-title class="table-list-add-product-title mb-6 d-flex align-center table-list-title-row">
+            <div class="d-flex align-center table-list-title-label" style="gap: 12px;">
+              <v-icon color="#FFD700" class="mr-2">mdi-plus-box</v-icon>
               Product Management
             </div>
-            <div class="d-flex align-center" style="gap: 12px; ">
+            <div class="d-flex align-center table-list-title-actions">
               <v-text-field
                 v-model="search"
                 placeholder="Search products..."
@@ -17,58 +22,80 @@
                 class="table-list-search-bar"
                 prepend-inner-icon="mdi-magnify"
               />
-              <v-btn class="table-list-add-btn" prepend-icon="mdi-plus" @click="showAddProduct = true">Add Product</v-btn>
+              <v-btn class="table-list-add-btn" @click="showAddProduct = true">
+                <v-icon left>mdi-plus</v-icon>
+                <span class="d-none d-md-inline">Add Product</span>
+              </v-btn>
             </div>
           </v-card-title>
           <v-card-text>
-            <div class="table-list-headings d-flex mb-2 px-2">
-              <div class="table-list-heading-col table-list-center-col" style="flex:2 0 0;">Product</div>
-              <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:120px;">Price</div>
-              <div class="table-list-heading-col table-list-center-col" style="flex:2 0 0;">Description</div>
-              <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:90px;">Quantity</div>
-              <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:120px;">Category</div>
-              <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:90px;">Actions</div>
+            <div class="table-list-search-row d-md-none">
+              <v-text-field
+                v-model="search"
+                placeholder="Search products..."
+                dense
+                hide-details
+                class="table-list-search-bar"
+                prepend-inner-icon="mdi-magnify"
+              />
+              <v-btn class="table-list-add-btn" icon @click="showAddProduct = true">
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
             </div>
-            <!-- Product Table -->
-            <v-data-table :headers="headers" :items="filteredProducts" class="elevation-1 table-list-custom-table" item-key="id" :items-per-page="5">
-              <!-- Removed image slot -->
-              <template #item.title="{ item }">
-                <div class="table-list-center-col" style="flex:2 0 0;">{{ item.title }}</div>
-              </template>
-              <template #item.price="{ item }">
-                <div class="table-list-center-col" style="flex:1 0 0; min-width:120px;">
-                  <span class="table-list-product-price navy-blur-bg">
-                    <template v-if="item.isUserAdded">
-                      ₱{{ Number(item.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+            <div class="table-list-table-wrapper">
+              <div style="min-width:700px;">
+                <div class="table-list-headings d-flex mb-2 px-2">
+                  <div class="table-list-heading-col table-list-center-col" style="flex:2 0 0;">Product</div>
+                  <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:120px;">Price</div>
+                  <div class="table-list-heading-col table-list-center-col" style="flex:2 0 0;">Description</div>
+                  <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:90px;">Quantity</div>
+                  <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:120px;">Category</div>
+                  <div class="table-list-heading-col table-list-center-col" style="flex:1 0 0; min-width:90px;">Actions</div>
+                </div>
+                <!-- Product Table -->
+                <div>
+                  <v-data-table :headers="headers" :items="filteredProducts" class="elevation-1 table-list-custom-table" item-key="id" :items-per-page="5">
+                    <!-- Removed image slot -->
+                    <template #item.title="{ item }">
+                      <div class="table-list-center-col" style="flex:2 0 0;">{{ item.title }}</div>
                     </template>
-                    <template v-else>
-                      ₱{{ (item.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    <template #item.price="{ item }">
+                      <div class="table-list-center-col" style="flex:1 0 0; min-width:120px;">
+                        <span class="table-list-product-price navy-blur-bg">
+                          <template v-if="item.isUserAdded">
+                            ₱{{ Number(item.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                          </template>
+                          <template v-else>
+                            ₱{{ (item.price * 58).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                          </template>
+                        </span>
+                      </div>
                     </template>
-                  </span>
+                    <template #item.description="{ item }">
+                      <div class="table-list-center-col" style="flex:2 0 0;">
+                        <span class="table-list-description">{{ item.description }}</span>
+                      </div>
+                    </template>
+                    <template #item.quantity="{ item }">
+                      <div class="table-list-center-col" style="flex:1 0 0; min-width:90px;">{{ item.available ?? '-' }}</div>
+                    </template>
+                    <template #item.category="{ item }">
+                      <div class="table-list-center-col" style="flex:1 0 0; min-width:120px;">{{ item.category }}</div>
+                    </template>
+                    <template #item.actions="{ item }">
+                      <div class="d-flex justify-center align-center table-list-action-icons" style="flex:1 0 0; min-width:90px; gap:12px;">
+                        <v-btn icon class="table-list-action-btn table-list-edit-btn" @click="editProduct(item)">
+                          <v-icon class="table-list-action-edit">mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn icon class="table-list-action-btn table-list-delete-btn" @click="deleteProduct(item.id)">
+                          <v-icon class="table-list-action-delete">mdi-delete</v-icon>
+                        </v-btn>
+                      </div>
+                    </template>
+                  </v-data-table>
                 </div>
-              </template>
-              <template #item.description="{ item }">
-                <div class="table-list-center-col" style="flex:2 0 0;">
-                  <span class="table-list-description">{{ item.description }}</span>
-                </div>
-              </template>
-              <template #item.quantity="{ item }">
-                <div class="table-list-center-col" style="flex:1 0 0; min-width:90px;">{{ item.available ?? '-' }}</div>
-              </template>
-              <template #item.category="{ item }">
-                <div class="table-list-center-col" style="flex:1 0 0; min-width:120px;">{{ item.category }}</div>
-              </template>
-              <template #item.actions="{ item }">
-                <div class="d-flex justify-center align-center table-list-action-icons" style="flex:1 0 0; min-width:90px; gap:12px;">
-                  <v-btn icon class="table-list-action-btn table-list-edit-btn" @click="editProduct(item)">
-                    <v-icon class="table-list-action-edit">mdi-pencil</v-icon>
-                  </v-btn>
-                  <v-btn icon class="table-list-action-btn table-list-delete-btn" @click="deleteProduct(item.id)">
-                    <v-icon class="table-list-action-delete">mdi-delete</v-icon>
-                  </v-btn>
-                </div>
-              </template>
-            </v-data-table>
+              </div>
+            </div>
             <!-- Add Product Modal -->
             <AddProductModal :show="showAddProduct" @add="addProductFromModal" @close="showAddProduct = false" />
             <!-- Edit Product Modal -->

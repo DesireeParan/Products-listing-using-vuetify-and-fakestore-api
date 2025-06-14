@@ -319,3 +319,13 @@ v-btn {
 .modal-close-btn:hover {
   background: #FFD700 !important;
 }
+
+@media screen and (max-width: 768px) {
+  .modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+}

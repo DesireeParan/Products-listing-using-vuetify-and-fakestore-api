@@ -1,44 +1,8 @@
 <template>
   <v-container class="product-list-modern" fluid>
     <v-row>
-      <!-- Sidebar Navigation Drawer for Categories -->
-      <v-navigation-drawer
-        app
-        permanent
-        width="220"
-        class="category-sidebar-modern"
-        color="#f8fafc"
-        style="border-right: 1.5px solid #FFD700;"
-      >
-        <div class="sidebar-title-modern mb-4 mt-2">Categories</div>
-        <div class="category-box-group-modern">
-          <v-btn
-            v-for="cat in ['All', ...categories]"
-            :key="cat"
-            :class="['category-box-btn-modern', { active: selectedCategory === (cat === 'All' ? '' : cat) }]"
-            rounded
-            size="small"
-            @click="selectedCategory = (cat === 'All' ? '' : cat)"
-          >
-            {{ cat }}
-          </v-btn>
-        </div>
-        <div class="sidebar-sort-title-modern mt-8 mb-2">Sort By</div>
-        <div class="sort-box-group-modern">
-          <v-btn
-            v-for="opt in sortOptions"
-            :key="opt.value"
-            :class="['sort-box-btn-modern', { active: sortOption === opt.value }]"
-            rounded
-            size="small"
-            @click="sortOption = opt.value"
-          >
-            {{ opt.title }}
-          </v-btn>
-        </div>
-      </v-navigation-drawer>
       <v-col>
-        <v-row class="mb-8 align-center justify-space-between">
+        <v-row class="mb-8 align-center justify-space-between border pb-4 ms-lg-1">
           <v-col cols="12" md="8">
             <h1 class="modern-title mb-2">Shop</h1>
             <div class="modern-subtitle mb-4">
@@ -47,57 +11,76 @@
             </div>
           </v-col>
         </v-row>
-        <v-row class="mb-6 align-center">
-          <v-col cols="12" md="8" class="d-flex align-center">
-            <v-text-field
-              v-model="search"
-              label="Search for anything..."
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              class="search-bar-modern"
-              hide-details
-              style="flex:1; min-width:0;"
-            />
-            <div class="searchbar-icons-modern d-flex align-center ml-4" style="gap: 1.2rem;">
-              <v-btn icon variant="text" class="icon-btn-modern" aria-label="Cart">
-                <v-icon size="28" color="#0a174e">mdi-cart-outline</v-icon>
-              </v-btn>
-              <v-btn icon variant="text" class="icon-btn-modern" aria-label="Notifications">
-                <v-icon size="28" color="#0a174e">mdi-bell-outline</v-icon>
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
-        <!-- Inline Category and Sort Controls -->
-        <v-row class="mb-6 align-center justify-space-between">
-          <v-col cols="12" md="8">
-            <div class="inline-category-sort-group d-flex align-center flex-wrap" style="gap: 1.5rem;">
-              <div class="inline-category-box-group d-flex align-center flex-wrap" style="gap: 0.5rem;">
-                <span class="mr-2" style="font-weight:600;color:#0a174e;">Category:</span>
-                <v-btn
-                  v-for="cat in ['All', ...categories]"
-                  :key="cat + '-inline'"
-                  :class="['category-box-btn-modern', { active: selectedCategory === (cat === 'All' ? '' : cat) }]"
-                  rounded
-                  size="small"
-                  @click="selectedCategory = (cat === 'All' ? '' : cat)"
-                >
-                  {{ cat }}
-                </v-btn>
+        <v-row class="mb-6 align-center ms-lg-1">
+          <v-col cols="12" md="12">
+            <div class="searchbar-row d-flex align-center">
+              <div class="filter-group" style="min-width:0;">
+                <label class="filter-label">Search</label>
+                <v-text-field
+                  v-model="search"
+                  placeholder="Search products..."
+                  label=""
+                  prepend-inner-icon="mdi-magnify"
+                  clearable
+                  class="search-bar-modern"
+                  hide-details
+                />
               </div>
-              <div class="inline-sort-box-group d-flex align-center flex-wrap" style="gap: 0.5rem;">
-                <span class="mr-2" style="font-weight:600;color:#0a174e;">Sort by:</span>
-                <v-btn
-                  v-for="opt in sortOptions"
-                  :key="opt.value + '-inline'"
-                  :class="['sort-box-btn-modern', { active: sortOption === opt.value }]"
-                  rounded
-                  size="small"
-                  @click="sortOption = opt.value"
-                >
-                  {{ opt.title }}
-                </v-btn>
+              <div class="inline-category-sort-group d-flex align-center" style="gap: 0.5rem;">
+                <div class="filter-group" style="min-width:90px;">
+                  <label class="filter-label">Min Price (₱)</label>
+                  <v-text-field
+                    v-model.number="minPrice"
+                    placeholder="0"
+                    label=""
+                    type="number"
+                    dense
+                    hide-details
+                    class="simple-dropdown"
+                  />
+                </div>
+                <div class="filter-group" style="min-width:90px;">
+                  <label class="filter-label">Max Price (₱)</label>
+                  <v-text-field
+                    v-model.number="maxPrice"
+                    placeholder="10000"
+                    label=""
+                    type="number"
+                    dense
+                    hide-details
+                    class="simple-dropdown"
+                  />
+                </div>
               </div>
+              <div class="inline-category-sort-group d-flex align-center" style="gap: 0.5rem;">
+                <div class="filter-group" >
+                  <label class="filter-label">Category</label>
+                  <v-select
+                    v-model="selectedCategory"
+                    :items="['', ...categories]"
+                    :item-title="cat => cat === '' ? 'All' : cat"
+                    :item-value="cat => cat"
+                    label=""
+                    dense
+                    hide-details
+                    class="simple-dropdown"
+                  />
+                </div>
+                <div class="filter-group" style="min-width:120px;">
+                  <label class="filter-label">Sort</label>
+                  <v-select
+                    v-model="sortOption"
+                    :items="sortOptions"
+                    item-title="title"
+                    item-value="value"
+                    label=""
+                    dense
+                    hide-details
+                    class="simple-dropdown"
+                  />
+                </div>
+              </div>
+              <div style="flex:1;"></div>
             </div>
           </v-col>
         </v-row>
@@ -157,6 +140,7 @@ import axios from 'axios';
 import { sharedProducts, sharedCategories } from './productStore';
 import AddProductModal from './AddProductModal.vue';
 import ProductDetailsModal from './ProductDetailsModal.vue';
+import { getCuriosityDescription, formatSold } from '../assets/js/product_list.js';
 import type { Product } from './types';
 import type { Ref } from 'vue';
 
@@ -196,6 +180,8 @@ export default defineComponent({
       { title: 'Price: High to Low', value: 'price-desc' }
     ]);
     const sortOption = ref('popular');
+    const minPrice = ref<number | null>(null);
+    const maxPrice = ref<number | null>(null);
 
     const fetchProducts = async () => {
       const response = await axios.get('https://fakestoreapi.com/products');
@@ -246,6 +232,12 @@ export default defineComponent({
       if (selectedCategory.value) {
         filtered = filtered.filter(p => p.category === selectedCategory.value);
       }
+      if (minPrice.value !== null) {
+        filtered = filtered.filter(p => p.price * 58 >= minPrice.value!);
+      }
+      if (maxPrice.value !== null) {
+        filtered = filtered.filter(p => p.price * 58 <= maxPrice.value!);
+      }
       // Sort logic
       if (sortOption.value === 'popular') {
         filtered = [...filtered].sort((a, b) => (b.sold ?? 0) - (a.sold ?? 0));
@@ -256,13 +248,6 @@ export default defineComponent({
       }
       return filtered;
     });
-
-    function getCuriosityDescription(desc: string) {
-      if (desc.length > 60) {
-        return desc.slice(0, 60) + '...';
-      }
-      return desc + '...';
-    }
 
     function openProduct(product: Product) {
       selectedProduct.value = product;
@@ -334,20 +319,13 @@ export default defineComponent({
       showAddProduct.value = false;
     }
 
-    function formatSold(sold: number = 0) {
-      if (sold >= 1000) {
-        return (sold / 1000).toFixed(sold % 1000 === 0 ? 0 : 1) + 'K';
-      }
-      return sold.toString();
-    }
-
     onMounted(fetchProducts);
 
     return {
       products, search, selectedCategory, categories, filteredProducts, downloadProducts,
       showModal, selectedProduct, openProduct, getCuriosityDescription, availableColors,
       showAddProduct, newProduct, addProduct, addProductFromModal,
-      sortOptions, sortOption, formatSold
+      sortOptions, sortOption, formatSold, minPrice, maxPrice
     };
   }
 });
@@ -439,8 +417,8 @@ export default defineComponent({
   align-items: center;
 }
 .search-bar-modern {
-  width: 100%;
-  margin: 0 auto;
+  width: 800px;
+  max-width: 100%;
   border-radius: 8px;
   background: #ffffff !important;
   color: #0a174e !important;
@@ -451,7 +429,6 @@ export default defineComponent({
   border: none !important;
   border-bottom: 2px solid #0a174e !important;
   color: #0a174e !important;
-  box-shadow: none !important;
 }
 .search-bar-modern input {
   color: #0a174e !important;
@@ -459,9 +436,7 @@ export default defineComponent({
   font-weight: 700;
   background: transparent !important;
 }
-.inline-category-sort-group {
-  margin-bottom: 2rem;
-}
+
 .inline-category-box-group {
   display: flex;
   align-items: center;
@@ -474,29 +449,28 @@ export default defineComponent({
 }
 .product-grid-modern {
   margin-top: 12px;
-  row-gap: 32px;
-  /* column-gap: 10px; */
   margin: 0 auto;
+  row-gap: 2rem;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 .product-card-modern {
   border-radius: 4px !important;
   background: #fff;
-  border: 1.5px solid #FFD700;
+  border: 1.5px solid #a8a8a8;
   color: #0a174e;
-  transition: box-shadow 0.2s, transform 0.2s;
   cursor: pointer;
   padding: 1.5rem;
-  max-width: 350px;
-  min-height: 370px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 0 !important;
+  margin: 0 10px;
 }
 .product-card-modern:hover {
   transform: translateY(-4px) scale(1.03);
-  border-color: #FFD700;
+  border-color: #0a174e;
 }
 .product-image-modern {
   object-fit: contain;
@@ -552,7 +526,7 @@ export default defineComponent({
   background: linear-gradient(90deg, #FFD700 0%, #fffbe6 100%) !important;
   color: #0a174e !important;
   font-weight: 700;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px 24px rgba(25,51,102,0.18);
   font-size: 1.1rem;
 }
@@ -576,6 +550,37 @@ export default defineComponent({
   background: #FFD700 !important;
   color: #0a174e !important;
 }
+.simple-dropdown .v-input__control {
+  background: #fff !important;
+  border-radius: 6px !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: none !important;
+}
+.simple-dropdown .v-field__input {
+  color: #222 !important;
+  font-size: 0.98rem !important;
+}
+.simple-dropdown .v-label {
+  color: #0a174e !important;
+}
+.searchbar-row {
+  width: 100%;
+  gap: 0.8rem;
+}
+.filter-label {
+  font-size: 0.95rem;
+  color: #0a174e !important;
+  font-weight: 600;
+  display: block;
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: #0a174e !important;
+  /* width: 300px; */
+}
 @media (max-width: 960px) {
   .category-sidebar-modern {
     display: none;
@@ -589,8 +594,46 @@ export default defineComponent({
   .message-btn-modern {
     right: 24px;
     bottom: 76px;
-    width: 46px;
-    height: 46px;
+  }
+  .search-bar-modern {
+    width: 100%;
+    border-radius: 8px;
+    background: #ffffff !important;
+    color: #0a174e !important;
+  }
+  .simple-dropdown .v-input__control {
+    background: #fff !important;
+    border-radius: 6px !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
+  }
+  .simple-dropdown .v-field__input {
+    color: #222 !important;
+    font-size: 0.98rem !important;
+  }
+  .simple-dropdown .v-label {
+    color: #0a174e !important;
+  }
+  .searchbar-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1.2rem;
+  }
+  .filter-label {
+    font-size: 0.95rem;
+    color: #0a174e !important;
+    font-weight: 600;
+    margin-bottom: 2px;
+    display: block;
+  }
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    color: #0a174e !important;
+    width: 100%;
   }
 }
 </style>
