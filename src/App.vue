@@ -1,4 +1,5 @@
 <template>
+  <h1>Hello</h1>
   <v-app>
     <v-app-bar app class="gold-navbar" elevation="4">
       <v-toolbar-title class="gold-title">
