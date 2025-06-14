@@ -11,9 +11,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.VITE_BASE || (process.env.NODE_ENV === 'production'
-    ? '/Products-listing-using-vuetify-and-fakestore-api/'
-    : '/'),
+  base: '/', // Set base to root for Vercel deployment
   plugins: [
     Vue({
       template: { transformAssetUrls },
