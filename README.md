@@ -104,7 +104,7 @@ Maria Desiree Paran is a dedicated PHP Laravel developer with strong experience 
 
 For more details, see the code in each component.
 
-<img src="src/assets/image1.png">
-<img src="src/assets/image2.png">
-<img src="src/assets/image3.png">
-<img src="src/assets/image4.png">
+<img src="src/assets/images/image1.png">
+<img src="src/assets/images/image2.png">
+<img src="src/assets/images/image3.png">
+<img src="src/assets/images/image4.png">
